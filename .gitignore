@@ -1,22 +1,46 @@
 # Secrets — ne jamais commiter
 RAG_POC/.env
 .env
+.envrc
 
 # Base vectorielle locale
 RAG_POC/qdrant_db/
 
 # Python
 __pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
-*.pkl
+*.py[codz]
+*$py.class
+*.so
 *.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+MANIFEST
+
+# Environnements virtuels
+.venv
+venv/
+env/
+ENV/
 
 # Modèles téléchargés
 *.bin
 *.safetensors
+*.pkl
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Outils
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/secrets.toml
 
 # OS
 .DS_Store
