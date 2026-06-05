@@ -1,0 +1,94 @@
+ETAPE 8 — Seuil de confiance (Gouvernance métier)
+===================================================
+
+❝ En production, une mauvaise décision prise avec confiance
+  coûte moins cher qu'une bonne décision prise trop tôt.
+  L'incertitude est une information métier, pas un échec. ❞
+
+
+🔴 La RÈGLE 7 dangereuse (identifiée depuis l'ETAPE 1)
+--------------------------------------------------------
+
+Depuis l'ETAPE 1, le README signalait ce risque :
+
+  if status == "KO":
+      corrected_price = model.predict(...)
+
+  Pas de seuil de confiance
+  Pas de probabilité minimale
+  Pas de garde-fou métier
+
+  → Chaque commande KO reçoit une correction automatique.
+  → Même si le modèle hésite (p_evollis = 0.51, p_hybris = 0.49).
+  → On corrige avec une "confiance" de 51% → bruit pur.
+
+  ❗ En production, ce comportement est DANGEREUX.
+
+
+🟢 Ce qui change avec l'ETAPE 8
+---------------------------------
+
+Trois décisions possibles désormais :
+
+  max_proba = max(p_origin_evollis, p_origin_hybris)
+
+  Si max_proba > 0.75 → décision automatique
+    → "EVOLLIS" ou "HYBRIS" selon la plus haute probabilité
+    → Correction appliquée
+
+  Si max_proba ≤ 0.75 → "INCERTAIN"
+    → Aucune correction automatique
+    → Cas renvoyé à un expert humain pour révision
+
+  OK → pas de ML, pas de correction (inchangé)
+
+
+📊 Impact du seuil sur les décisions
+--------------------------------------
+
+Seuil    Décisions auto  Cas INCERTAINS  Commentaire
+---------|---------------|----------------|------------------------
+0.50     100%            0%              Pas de filtre (ETAPE 1-7)
+0.65     ~85%            ~15%            Filtre léger
+0.75     ~70%            ~30%            Recommandé (démo)
+0.85     ~50%            ~50%            Conservateur
+0.95     ~20%            ~80%            Très conservateur
+
+→ Le seuil est un paramètre métier, pas technique.
+→ C'est le chef de projet (pas le data scientist) qui le fixe.
+
+
+🧠 Pourquoi 0.75 ?
+-------------------
+
+  En dessous de 75%, le modèle n'est pas sûr à 3 contre 1.
+  En analyse de risque, on considère qu'une décision
+  à moins de 75% de confiance mérite une vérification humaine.
+
+  Ce seuil est configurable :
+    workshop = ETAPE8(..., confidence_threshold=0.85)
+
+
+📋 Rapport de gouvernance (généré automatiquement)
+---------------------------------------------------
+
+  Seuil de confiance       : 75%
+  Cas KO détectés          : 412
+  Décisions automatiques   : 287  (69.7%)
+  Renvoyés à l'expert      : 125  (30.3%)
+
+  → On ne renonce pas à décider pour 30% des cas.
+  → On dit : "pour ces 30%, la machine doute, regardez vous-même."
+  → C'est de la transparence, pas de la faiblesse.
+
+
+🎯 Point clé à retenir
+-----------------------
+
+❝ Le ML n'est pas là pour remplacer le jugement humain
+  sur les cas difficiles.
+  Il est là pour traiter rapidement les cas simples,
+  et signaler honnêtement les cas complexes.
+
+  Un modèle qui dit "je ne sais pas" est plus fiable
+  qu'un modèle qui dit toujours quelque chose. ❞

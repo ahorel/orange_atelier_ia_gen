@@ -1,0 +1,10 @@
+;Unnamed: 0_EVOLLIS;order_id;order_date;product_name;quantity;unit_price_EVOLLIS;total_price_EVOLLIS;Unnamed: 0_HYBRIS;unit_price_HYBRIS;total_price_HYBRIS;expected_price_evollis;expected_price_hybris;status;error_origin;error_origin_label;true_price;predicted_origin;predicted_origin_label;corrected_price;scenario_explanation
+0;0;1;01/06/2025;Clavier USB;2;10;20;0;10;20;20;20;OK;-1;OK;20;-1;OK;20;Les montants EVOLLIS et HYBRIS sont cohérents avec le prix unitaire et la quantité. Aucun correctif nécessaire.
+1;1;2;02/06/2025;Souris sans fil;1;20;20;1;20;20;20;20;OK;-1;OK;20;-1;OK;20;Les montants EVOLLIS et HYBRIS sont cohérents avec le prix unitaire et la quantité. Aucun correctif nécessaire.
+2;2;3;03/06/2025;Écran 24 pouces;3;5;15;2;5;15;15;15;OK;-1;OK;15;-1;OK;15;Les montants EVOLLIS et HYBRIS sont cohérents avec le prix unitaire et la quantité. Aucun correctif nécessaire.
+3;3;4;;Clavier USB;2;10;30;3;12;24;20;24;KO;0;EVOLLIS;20;0;EVOLLIS;30;Incohérence détectée. Le modèle identifie une erreur côté EVOLLIS. Le prix EVOLLIS (30) et le prix HYBRIS (24) sont analysés. Un prix corrigé de 30 est proposé.
+4;4;5;05/06/2025;Casque audio;4;8;32;4;8;20;32;32;KO;1;HYBRIS;32;0;EVOLLIS;32;Incohérence détectée. Le modèle identifie une erreur côté EVOLLIS. Le prix EVOLLIS (32) et le prix HYBRIS (20) sont analysés. Un prix corrigé de 32 est proposé.
+5;5;6;06/06/2025;Webcam HD;5;7;40;5;7;35;35;35;KO;0;EVOLLIS;35;0;EVOLLIS;40;Incohérence détectée. Le modèle identifie une erreur côté EVOLLIS. Le prix EVOLLIS (40) et le prix HYBRIS (35) sont analysés. Un prix corrigé de 40 est proposé.
+;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;
+;;;;;04/06/2025;;;;;;;;;;;;;;;

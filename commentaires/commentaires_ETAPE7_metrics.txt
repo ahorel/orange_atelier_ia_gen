@@ -1,0 +1,96 @@
+ETAPE 7 — Métriques de performance formelles
+=============================================
+
+❝ Un modèle sans métriques est une boussole sans nord.
+  On ne sait pas s'il s'améliore, se dégrade ou tourne en rond. ❞
+
+
+🔴 Ce qui manquait jusqu'ici (ETAPE 1–6)
+------------------------------------------
+
+Dans toutes les étapes précédentes :
+  → Validation uniquement visuelle (print des prédictions)
+  → Aucun indicateur objectif de performance
+  → Impossible de comparer deux modèles objectivement
+  → En production : on ne saurait pas si le modèle dérive
+
+❗ C'est le problème le plus grave en ML industriel :
+   sans métriques, on pilote à l'aveugle.
+
+
+🟢 Ce qui change avec l'ETAPE 7
+---------------------------------
+
+1️⃣  Train / Test split (80% / 20%, stratifié)
+
+   Stratifié = les deux classes (EVOLLIS / HYBRIS) sont présentes
+   dans les mêmes proportions dans le train ET dans le test.
+
+   Pourquoi stratifier ?
+   Si EVOLLIS représente 70% des cas KO, le test doit aussi
+   contenir ~70% EVOLLIS → le test est représentatif.
+
+   Règle d'or :
+   → On entraîne sur le train
+   → On évalue UNIQUEMENT sur le test (données jamais vues)
+
+
+2️⃣  Accuracy
+   = (bonnes prédictions) / (total prédictions)
+
+   Limite : si 90% des cas sont EVOLLIS,
+   un modèle qui dit toujours EVOLLIS atteint 90% d'accuracy
+   sans avoir rien appris.
+   → Ne pas utiliser seul sur des classes déséquilibrées.
+
+
+3️⃣  F1-score pondéré
+   = moyenne harmonique(précision, rappel), pondérée par la fréquence
+
+   Précision  : parmi les "EVOLLIS" prédits, combien sont vrais ?
+   Rappel     : parmi les vrais EVOLLIS, combien a-t-on trouvés ?
+   F1         : équilibre entre les deux
+
+   C'est LA métrique recommandée quand les classes sont déséquilibrées.
+
+
+4️⃣  ROC-AUC (0 → 1, idéal = 1)
+   Mesure la capacité du modèle à séparer EVOLLIS de HYBRIS
+   indépendamment du seuil de décision.
+
+   AUC = 0.5 → modèle aléatoire (nul)
+   AUC = 0.7 → acceptable
+   AUC = 0.9 → excellent
+   AUC = 1.0 → parfait (suspicion d'overfitting)
+
+
+5️⃣  Matrice de confusion
+   Permet de voir QUEL TYPE d'erreur le modèle fait :
+
+                    Prédit EVOLLIS  Prédit HYBRIS
+   Réel EVOLLIS          VP              FN
+   Réel HYBRIS           FP              VN
+
+   FP (Faux Positifs EVOLLIS) = on accuse EVOLLIS alors que c'est HYBRIS
+   → Erreur métier grave : on corrige la mauvaise source
+
+
+📊 Interprétation des métriques
+---------------------------------
+
+Métrique        Valeur     Interprétation
+----------------|----------|-------------------------------------------
+Accuracy        ≥ 0.85     Acceptable pour ce use case
+F1 pondéré      ≥ 0.80     Bon équilibre précision/rappel
+ROC-AUC         ≥ 0.85     Bonne séparation des classes
+FP (confusion)  ≤ 10%      Taux de mauvaises attributions acceptable
+
+
+🎯 Point clé à retenir
+-----------------------
+
+❝ Les métriques ne disent pas si le modèle est "bon" en absolu.
+  Elles permettent de comparer :
+  ETAPE6 vs ETAPE7, semaine S vs semaine S+1,
+  modèle A vs modèle B.
+  Sans elles, toute amélioration est une intuition, pas une preuve. ❞

@@ -1,0 +1,118 @@
+ETAPE 10 — Explicabilité par SHAP
+===================================
+
+❝ Un modèle inexplicable est un modèle invendable.
+  Le métier ne fait confiance qu'à ce qu'il comprend. ❞
+
+
+🔴 Le problème de la boîte noire (ETAPE 1–9)
+----------------------------------------------
+
+Depuis l'ETAPE 2, le modèle rend des décisions probabilistes :
+
+  "Cette commande → EVOLLIS (87%)"
+
+  Mais impossible de répondre à la question naturelle du métier :
+  "Pourquoi EVOLLIS ? Sur quelle base ?"
+
+  ❗ Sans explication :
+  → Le métier ne valide pas les décisions
+  → Les erreurs du modèle passent inaperçues
+  → Impossible d'auditer le modèle (conformité)
+  → Impossible d'améliorer le modèle intelligemment
+
+
+🟢 Ce que fait SHAP (ETAPE 10)
+--------------------------------
+
+SHAP (SHapley Additive exPlanations) est issu de la théorie des jeux.
+Pour chaque prédiction, il répond :
+
+  "Quelle est la contribution de chaque feature
+   à cette prédiction spécifique ?"
+
+Exemple concret — Commande 47 :
+
+  Prédiction : EVOLLIS (89%)
+
+  Contributions SHAP :
+    gap_evollis      +0.42  → pousse FORT vers EVOLLIS
+    ratio_evollis    +0.31  → pousse vers EVOLLIS
+    gap_hybris       -0.12  → pousse légèrement vers HYBRIS
+    product_label    +0.07  → ce produit est souvent EVOLLIS
+    quantity         +0.02  → faible influence
+    month            -0.01  → négligeable
+
+  Interprétation :
+  "La décision EVOLLIS est principalement due à un gap_evollis
+   élevé (écart de 12.50€ sur le total EVOLLIS) et un ratio
+   d'erreur de 8.3%. Le gap HYBRIS est faible, ce qui confirme
+   que l'erreur vient bien d'EVOLLIS."
+
+
+📊 Deux niveaux d'explication
+-------------------------------
+
+1️⃣  Explication globale (ETAPE10_shap_summary.png)
+   → Vue d'ensemble sur tous les cas KO
+   → Montre quelles features ont le plus d'impact en général
+   → Permet d'identifier des patterns systémiques
+
+   Lecture du graphique beeswarm :
+     Axe horizontal : valeur SHAP (impact sur la prédiction)
+     Couleur rouge  : valeur de feature élevée
+     Couleur bleue  : valeur de feature faible
+     Chaque point   : une commande KO
+
+2️⃣  Explication locale (par commande, colonne shap_explanation)
+   → Phrase générée automatiquement
+   → "Incohérence attribuée à EVOLLIS (confiance 89%).
+      Facteur principal : gap_evollis = 12.5."
+
+
+📋 Nouvelles colonnes dans le CSV de sortie
+--------------------------------------------
+
+Colonne              Description
+---------------------|------------------------------------------
+shap_top_feature     Feature la plus décisive (ex: gap_evollis)
+shap_top_value       Valeur SHAP de cette feature
+shap_explanation     Phrase d'explication en français
+
+
+⚙️  Installation de SHAP
+--------------------------
+
+  pip install shap
+
+  Si shap n'est pas installé, l'étape s'exécute sans erreur
+  mais sans les valeurs SHAP (les colonnes shap_* sont vides).
+
+
+🎯 Point clé à retenir
+-----------------------
+
+❝ L'explicabilité n'est pas un luxe.
+  C'est une obligation dès que le modèle prend des décisions
+  qui ont un impact financier ou opérationnel.
+
+  SHAP transforme le "parce que le modèle l'a dit"
+  en "parce que l'écart sur EVOLLIS était de 12€, soit 8% du total".
+
+  C'est la différence entre la confiance aveugle
+  et la confiance fondée sur des preuves. ❞
+
+
+🔜 Et après l'ETAPE 10 ?
+-------------------------
+
+  - ETAPE 11 : Monitoring de dérive (concept drift)
+    → Détecter quand les patterns changent dans les nouvelles données
+    → Alerter quand la performance du modèle se dégrade
+
+  - ETAPE 12 : Pipeline de ré-entraînement automatique
+    → Déclencher un ré-entraînement quand les métriques baissent
+
+  - ETAPE RAG : Interroger le projet en langage naturel
+    → "Comment fonctionne le warm start ?"
+    → Voir dossier RAG_POC/

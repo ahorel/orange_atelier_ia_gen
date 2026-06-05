@@ -1,0 +1,130 @@
+Pourquoi cette version est meilleure que l’entraînement précédent
+🔴 Ancienne méthode (ré-entraînement simple)
+
+Le modèle est réinitialisé à chaque run
+
+Il oublie tout ce qu’il a appris avant
+
+Il dépend fortement :
+
+du volume du jour
+
+du bruit du jour
+
+Les probabilités restent instables d’un run à l’autre
+
+👉 Même logique, mais mémoire zéro.
+
+🟢 Nouvelle méthode (warm start XGBoost)
+self.clf_origin.fit(X, y, xgb_model=self.model_path)
+
+
+Ce que ça change fondamentalement :
+
+✔ Les arbres précédemment appris sont conservés
+✔ Les nouveaux arbres complètent l’existant
+✔ Les patterns récurrents sont renforcés
+✔ Le modèle devient cumulatif dans le temps
+
+👉 On ne “réapprend pas”, on raffine.
+
+2️⃣ Ce que le modèle fait réellement (important à expliquer)
+
+❝ Le modèle n’apprend pas de règles.
+Il accumule des observations statistiques. ❞
+
+Concrètement :
+
+Les premiers runs :
+
+le modèle hésite
+
+probabilités proches de 0.6 / 0.4
+
+Avec les runs successifs :
+
+les mêmes configurations reviennent
+
+les feuilles XGBoost deviennent plus “pures”
+
+l’entropie diminue
+
+📌 Résultat :
+
+Avant :  P(EVOLLIS)=0.85
+Après :  P(EVOLLIS)=0.995
+
+
+👉 Même décision, confiance plus élevée.
+
+3️⃣ Pourquoi c’est PLUS fiable (preuve côté données)
+🔬 Preuve n°1 — stabilité des probabilités
+
+Sur des commandes identiques :
+
+Avant warm start
+
+probabilités varient d’un run à l’autre
+
+Après warm start
+
+probabilités quasi constantes
+
+➡️ Variance ↓
+➡️ Confiance ↑
+
+🔬 Preuve n°2 — convergence sur les signaux faibles
+
+Les features clés :
+
+gap_evollis
+gap_hybris
+quantity
+unit_price
+
+
+Quand le modèle voit 100 fois :
+
+gap_evollis >> gap_hybris → EVOLLIS
+
+
+Il ne “décide pas” :
+👉 il converge mathématiquement vers cette distribution.
+
+C’est une loi des grands nombres, pas une règle codée.
+
+🔬 Preuve n°3 — pas d’overfitting local
+
+Contrairement à un entraînement journalier isolé :
+
+le warm start :
+
+dilue le bruit
+
+renforce les structures stables
+
+les outliers d’un jour ont moins d’impact
+
+👉 Le modèle devient plus robuste, pas plus complexe.
+
+4️⃣ Pourquoi cette approche est scientifiquement saine
+Critère	Ré-entraînement	Warm start
+Mémoire historique	❌	✅
+Stabilité	❌	✅
+Robustesse	❌	✅
+Complexité	=	=
+Interprétabilité	=	=
+Règles codées	❌	❌
+
+📌 Aucune règle métier ajoutée
+📌 Aucune feature supplémentaire
+📌 Aucune complexité artificielle
+
+➡️ Seule la quantité d’observations augmente
+
+5️⃣ Phrase clé à dire en conférence (impact fort)
+
+« Nous n’avons pas changé le modèle.
+Nous n’avons ajouté aucune règle.
+Nous avons simplement laissé le modèle se souvenir de ce qu’il avait déjà vu.
+Et cette mémoire rend ses décisions plus fiables. »

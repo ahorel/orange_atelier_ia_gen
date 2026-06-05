@@ -1,0 +1,111 @@
+RAG – Étape 1 : Ingestion & Indexation
+=========================================
+
+🎯 Objectif pédagogique
+------------------------
+Faire comprendre aux collaborateurs comment un système RAG "apprend" à
+connaître un corpus documentaire, SANS entraîner de modèle.
+
+❝ Un RAG ne mémorise pas vos documents.
+  Il les transforme en coordonnées dans un espace mathématique de haute dimension.
+  Deux phrases proches en sens atterrissent près l'une de l'autre dans cet espace. ❞
+
+
+🧱 Les 4 briques de l'Étape 1
+-------------------------------
+
+1️⃣  CHARGEMENT (Load)
+    ─────────────────
+    On lit les fichiers texte du projet :
+    → README, commentaires d'atelier, scripts Python, instructions Copilot
+    → Tout ce que les collaborateurs veulent pouvoir interroger
+
+    Analogie : ouvrir les livres avant de les mettre en bibliothèque.
+
+
+2️⃣  CHUNKING (Découpage)
+    ──────────────────────
+    On ne peut pas encoder un document entier dans un seul vecteur :
+    l'information serait trop diluée.
+
+    On découpe en morceaux de ~500 caractères avec 100 chars de chevauchement.
+    Le chevauchement évite de couper une idée en deux entre deux chunks.
+
+    Analogie : indexer un livre page par page, pas livre par livre.
+
+    Paramètres :
+      CHUNK_SIZE    = 500 caractères (~4-5 phrases)
+      CHUNK_OVERLAP = 100 caractères (derniers mots du chunk précédent)
+
+
+3️⃣  EMBEDDING (Vectorisation)
+    ────────────────────────────
+    Chaque chunk est transformé en un vecteur de 384 dimensions
+    par le modèle sentence-transformers paraphrase-multilingual-MiniLM-L12-v2.
+
+    ❝ Ce modèle comprend le français, l'anglais et 50 autres langues.
+      Il n'a pas besoin de clé API. Il tourne entièrement en local. ❞
+
+    Résultat :
+      "gap_evollis = différence entre prix réel et attendu"
+      → [0.023, -0.441, 0.187, 0.009, ..., 0.334]  (384 nombres)
+
+    Propriété clé :
+      "écart sur le prix EVOLLIS" → vecteur PROCHE de "gap_evollis"
+      même si les mots sont différents → recherche sémantique, pas lexicale
+
+
+4️⃣  STOCKAGE dans Qdrant
+    ──────────────────────
+    Qdrant est une base de données vectorielle open-source.
+    En mode local (qdrant-client >= 1.9), elle fonctionne sans serveur,
+    stockée directement sur disque dans qdrant_db/.
+
+    Chaque point Qdrant contient :
+      - id      : UUID unique du chunk (déterministe → ré-indexation idempotente)
+      - vector  : embedding 384 dimensions (float32)
+      - payload : texte original + métadonnées (source, type, tag)
+
+    Distance utilisée : COSINE
+      score = 1.0 → sens identique
+      score = 0.0 → sens sans rapport
+
+    Analogie : une bibliothèque physique avec un index ultra-précis.
+
+
+📊 Comparaison : Recherche classique vs RAG
+--------------------------------------------
+
+Critère              | Grep / mots-clés      | RAG (vectoriel Qdrant)
+---------------------|---------------------- |---------------------------
+Requête              | Mot exact             | Sens de la phrase
+"gap evollis"        | Trouve "gap_evollis"  | Trouve aussi "écart EVOLLIS"
+Multilingue          | ❌                    | ✅
+Synonymes            | ❌                    | ✅
+Résistance typos     | ❌                    | ✅ (partiel)
+Contexte             | ❌                    | ✅
+Scalabilité          | ❌                    | ✅ (Qdrant gère des millions de points)
+
+
+🔜 Étape 2 — Retrieval
+-----------------------
+À venir : interroger la base avec une question en langage naturel
+et récupérer les N chunks les plus pertinents.
+
+Exemple :
+  Question : "Pourquoi utilise-t-on un warm start ?"
+  → Qdrant retourne les 3 points les plus proches sémantiquement
+  → Ces chunks seront injectés dans le prompt d'un LLM (Étape 3)
+
+
+🔜 Étape 3 — Generation (RAG complet)
+--------------------------------------
+Le LLM (ex: GPT-4, Mistral, Llama) reçoit :
+  [CONTEXTE] {points retournés par Qdrant}
+  [QUESTION] {question du collaborateur}
+  → Génère une réponse précise, fondée sur VOS documents
+
+
+📁 Fichiers produits par cette étape
+--------------------------------------
+  RAG_POC/qdrant_db/    → Base vectorielle Qdrant persistante (ne pas supprimer)

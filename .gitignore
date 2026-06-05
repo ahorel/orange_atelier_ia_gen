@@ -1,0 +1,23 @@
+# Secrets — ne jamais commiter
+RAG_POC/.env
+.env
+
+# Base vectorielle locale
+RAG_POC/qdrant_db/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.pkl
+*.egg-info/
+
+# Modèles téléchargés
+*.bin
+*.safetensors
+
+# OS
+.DS_Store
+Thumbs.db

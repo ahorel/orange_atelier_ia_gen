@@ -1,0 +1,7 @@
+Unnamed: 0_EVOLLIS;order_id;order_date;product_name;quantity;unit_price_EVOLLIS;total_price_EVOLLIS;Unnamed: 0_HYBRIS;unit_price_HYBRIS;total_price_HYBRIS;expected_price_evollis;expected_price_hybris;gap_evollis;gap_hybris;is_incoherent;p_origin_evollis;p_origin_hybris;predicted_origin
+0;1;2025-06-01;Clavier USB;2;10;20;0;10;20;20;20;0;0;0;0.0;0.0;HYBRIS
+1;2;2025-06-02;Souris sans fil;1;20;20;1;20;20;20;20;0;0;0;0.0;0.0;HYBRIS
+2;3;2025-06-03;Écran 24 pouces;3;5;15;2;5;15;15;15;0;0;0;0.0;0.0;HYBRIS
+3;4;2025-06-04;Clavier USB;2;10;30;3;12;24;20;24;10;0;1;0.6584664;0.34153354;EVOLLIS
+4;5;2025-06-05;Casque audio;4;8;32;4;8;20;32;32;0;12;1;0.6584664;0.34153354;EVOLLIS
+5;6;2025-06-06;Webcam HD;5;7;40;5;7;35;35;35;5;0;1;0.6584664;0.34153354;EVOLLIS

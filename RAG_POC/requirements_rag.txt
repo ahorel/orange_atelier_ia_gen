@@ -1,0 +1,22 @@
+# RAG POC — Dépendances
+# Installer avec : pip install -r RAG_POC/requirements_rag.txt
+
+# ── Base vectorielle ──────────────────────────────────────────
+# Mode local ET cloud (Qdrant Cloud)
+qdrant-client>=1.9.0
+
+# ── Embeddings locaux (CPU, ~90 MB, multilingue FR+EN) ────────
+sentence-transformers>=3.0.0
+
+# ── LLM pour la génération (Groq — gratuit sans GPU) ─────────
+groq>=0.11.0
+
+# ── Interface web partagée ────────────────────────────────────
+streamlit>=1.35.0
+
+# ── Chargement des variables d'environnement ──────────────────
+python-dotenv>=1.0.0
+
+# ── Déjà présent dans le projet ──────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0

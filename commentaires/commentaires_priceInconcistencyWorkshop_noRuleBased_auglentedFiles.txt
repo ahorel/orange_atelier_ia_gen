@@ -1,0 +1,165 @@
+
+Résumé : 
+
+❝ Le modèle n’a pas changé de logique.
+Il n’a pas appris de nouvelles règles.
+La seule chose qui a changé, c’est la quantité de données.
+Et pourtant, ses décisions sont devenues plus fiables. ❞
+
+❝ En Machine Learning,
+on n’améliore pas toujours un modèle en le rendant plus complexe,
+mais en lui montrant plus de cas réels. ❞
+
+Ça prépare le public à regarder la confiance, pas la “magie”.
+
+Comment on voit concrètement que les résultats sont plus fiables
+
+🔹 Indicateur simple à montrer : les probabilités
+
+Explique ceci :
+
+❝ Le modèle ne dit pas seulement “EVOLLIS” ou “HYBRIS”.
+Il dit aussi à quel point il est sûr. ❞
+
+Puis montre un extrait réel :
+
+Cas	p_EVOLLIS	p_HYBRIS	Lecture humaine
+Disque SSD PCIe NVMe	97 %	3 %	Très sûr
+Souris Gaming RGB	99 %	1 %	Quasi certain
+Imprimante laser couleur	1 %	99 %	Quasi certain
+
+. Les prédictions sont souvent très confiantes
+
+Exemples typiques :
+
+Cas	p_origin_evollis	p_origin_hybris	Décision
+Disque SSD PCIe NVMe	0.97	0.03	EVOLLIS
+Support pour laptop	0.04	0.95	HYBRIS
+Souris Gaming RGB	0.99	0.01	EVOLLIS
+Imprimante laser couleur	0.01	0.99	HYBRIS
+
+👉 Ici, le modèle n’hésite pas
+👉 Il a vu des centaines de cas similaires pendant l’entraînement
+👉 L’augmentation du volume de données renforce la certitude
+
+➡️ Effet direct de l’augmentation des fichiers sources.
+
+👉 Avec peu de données, ces valeurs étaient souvent proches de 50/50
+👉 Avec plus de données, elles deviennent extrêmes
+
+➡️ C’est exactement ce qu’on appelle un modèle plus fiable
+
+🔹 Ce que “plus fiable” veut dire (sans ML)
+
+Tu peux dire :
+
+❝ Avant, le modèle hésitait souvent.
+Maintenant, il hésite beaucoup moins. ❞
+
+Ou encore :
+
+❝ Quand il se trompe, il doute.
+Quand il est sûr, il est très sûr. ❞
+
+C’est très parlant pour des néophytes.
+
+3️⃣ Exemple pédagogique très fort (cas répétés)
+
+Montre que des situations très similaires donnent désormais la même décision.
+
+Exemples visibles dans tes données :
+
+Produits similaires
+
+Écarts similaires
+
+Fournisseurs variés
+
+Périodes différentes
+
+➡️ Résultat :
+
+même origine prédite
+
+même source jugée suspecte
+
+probabilités élevées
+
+👉 Avant, chaque cas était “isolé”
+👉 Maintenant, le modèle reconnaît des familles de situations
+
+Phrase clé :
+
+❝ Plus on montre d’exemples au modèle, plus il reconnaît des situations déjà vues. ❞
+
+4️⃣ Ce que l’augmentation des données a corrigé concrètement
+✅ Avant (peu de données)
+
+décisions instables
+
+probabilités molles (55 % / 45 %)
+
+changements de décision pour des cas proches
+
+✅ Maintenant (données augmentées)
+
+décisions cohérentes
+
+probabilités très nettes (90–99 %)
+
+comportement stable sur toute l’année
+
+➡️ Même modèle
+➡️ Même features
+➡️ Même code
+➡️ Juste plus de données
+
+C’est LE point fort de ta démo.
+
+5️⃣ Montrer que le modèle sait aussi dire “je suis moins sûr”
+
+Très important pour la crédibilité 👇
+
+Montre 1 ou 2 cas comme :
+
+p_origin_evollis = 0.52
+p_origin_hybris = 0.48
+
+
+Explique :
+
+❝ Ici, même avec beaucoup de données,
+le modèle voit deux sources presque équivalentes.
+Il choisit, mais il signale son incertitude. ❞
+
+➡️ Ça prouve que :
+
+le modèle ne force pas une certitude artificielle
+
+la probabilité est une information métier exploitable
+
+6️⃣ Phrase de conclusion très simple (slide finale)
+
+Tu peux conclure par une phrase comme :
+
+❝ En Machine Learning,
+on n’améliore pas toujours un modèle en le rendant plus complexe,
+mais en lui montrant plus de cas réels. ❞
+
+Ou encore :
+
+❝ Le modèle n’a pas appris de nouvelles règles.
+Il a simplement appris à être plus sûr de lui. ❞
+
+7️⃣ Si tu veux une slide “avant / après” clé en main
+
+Je peux te préparer :
+
+un tableau “petit dataset vs dataset augmenté”
+
+un graphique de distribution des probabilités
+
+une phrase ultra vulgarisée pour managers
+
+Dis-moi juste :
+👉 présentation orale, slides, ou rapport écrit

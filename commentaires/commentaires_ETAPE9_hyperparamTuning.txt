@@ -1,0 +1,91 @@
+ETAPE 9 — Hyperparameter Tuning (GridSearchCV)
+===============================================
+
+❝ Un algorithme mal configuré, c'est comme une voiture de course
+  avec les mauvais pneus : la puissance est là, mais elle ne s'exprime pas. ❞
+
+
+🔴 Ce qui était arbitraire jusqu'ici (ETAPE 1–8)
+--------------------------------------------------
+
+Depuis l'ETAPE 1, les hyperparamètres sont codés en dur :
+
+  XGBClassifier(
+      n_estimators=50,    ← pourquoi 50 et pas 100 ?
+      max_depth=3,        ← pourquoi 3 et pas 4 ?
+      learning_rate=0.1,  ← pourquoi 0.1 et pas 0.05 ?
+  )
+
+  Ces valeurs viennent d'une convention (valeurs "par défaut raisonnables"),
+  pas d'une optimisation sur nos données spécifiques.
+
+  ❗ Les données EVOLLIS/HYBRIS ont leurs propres caractéristiques.
+     Les meilleurs paramètres pour ce cas ne sont pas les mêmes
+     que pour un autre problème.
+
+
+🟢 Ce qui change avec l'ETAPE 9
+---------------------------------
+
+GridSearchCV explore toutes les combinaisons de paramètres
+et sélectionne automatiquement la meilleure.
+
+Paramètres explorés :
+  max_depth        : [2, 3, 4]     → profondeur max des arbres
+  learning_rate    : [0.05, 0.1]   → vitesse d'apprentissage
+  subsample        : [0.8, 1.0]    → fraction de lignes par arbre
+  colsample_bytree : [0.8]         → fraction de features par arbre
+  n_estimators     : [50, 100]     → nombre d'arbres
+
+
+📐 Comment fonctionne le GridSearch ?
+---------------------------------------
+
+1. Pour chaque combinaison de paramètres :
+   a. Diviser le jeu d'entraînement en 5 parties (folds)
+   b. Entraîner sur 4 parties, évaluer sur la 5ème
+   c. Répéter 5 fois (chaque fold joue le rôle de validation)
+   d. Calculer le F1-score moyen sur les 5 folds
+
+2. Retenir la combinaison avec le meilleur F1-score moyen
+
+Exemple avec la grille démo (12 combinaisons × 5 folds = 60 entraînements) :
+
+  Combinaison     max_depth  lr     n_est  F1 moyen
+  ----------------|---------|-------|-------|--------
+  Combinaison 1       2      0.05    50     0.821
+  Combinaison 2       2      0.05   100     0.834
+  Combinaison 3       2      0.10    50     0.847
+  ...
+  Combinaison 12      4      0.10   100     0.872  ← MEILLEURE
+
+
+🧪 Pourquoi la validation croisée (5-fold) ?
+---------------------------------------------
+
+Un seul split train/test peut être chanceux ou malchanceux.
+La validation croisée moyenne sur 5 splits différents :
+→ Moins de variance dans l'estimation de performance
+→ Résultat plus fiable qu'un seul split
+
+
+⚙️  Mode démo vs mode complet
+--------------------------------
+
+  demo_mode=True  (défaut) :
+    Grille réduite, ~12 combinaisons, ~30 secondes
+    Idéal pour l'atelier
+
+  demo_mode=False :
+    Grille complète, 243 combinaisons × 5 = 1215 entraînements
+    ~5–15 minutes selon le hardware
+    Idéal pour une vraie mise en production
+
+
+🎯 Point clé à retenir
+-----------------------
+
+❝ On n'invente pas les hyperparamètres.
+  On les cherche de façon systématique sur nos propres données.
+  La machine choisit, nous définissons l'espace de recherche.
+  C'est une collaboration, pas une magie. ❞

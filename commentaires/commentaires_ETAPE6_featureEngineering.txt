@@ -1,0 +1,87 @@
+ETAPE 6 — Feature Engineering enrichi
+=======================================
+
+❝ Ce n'est pas le modèle qui s'est amélioré.
+  Ce sont les informations qu'on lui a données qui sont devenues plus riches.
+  Un modèle intelligent sur des features pauvres reste un modèle pauvre. ❞
+
+
+🔴 Ce qui était limité avant (ETAPE 2–5)
+-----------------------------------------
+
+Features disponibles :
+  quantity, unit_price_EVOLLIS, unit_price_HYBRIS,
+  total_price_EVOLLIS, total_price_HYBRIS,
+  gap_evollis, gap_hybris
+
+Problème du gap absolu :
+  Une commande de 10 unités à 1 000€ avec gap = 50€ → erreur de 5%
+  Une commande de 2 unités à 10€    avec gap = 50€  → erreur de 250%
+
+  Le modèle traite ces deux cas identiquement.
+  Il ne "voit" pas la gravité relative de l'erreur.
+
+Problème du nom produit :
+  "Clavier USB" est une chaîne de texte.
+  XGBoost ne peut pas traiter des chaînes → feature ignorée.
+  Or certains produits sont structurellement plus souvent
+  mal saisis dans EVOLLIS ou dans HYBRIS.
+
+Problème de la temporalité :
+  Les erreurs peuvent être saisonnières (clôture trimestrielle,
+  migration système, changement de fournisseur).
+  Sans date encodée, le modèle est aveugle à la saisonnalité.
+
+
+🟢 Ce qui change avec l'ETAPE 6
+---------------------------------
+
+1️⃣  ratio_evollis = gap_evollis / total_price_EVOLLIS
+   → Mesure le % d'erreur sur le total EVOLLIS
+   → Normalise par la taille de la commande
+   → Résultat : les erreurs "proportionnellement grandes" ressortent
+
+2️⃣  ratio_hybris = gap_hybris / total_price_HYBRIS
+   → Même logique côté HYBRIS
+
+3️⃣  product_label (LabelEncoder)
+   → "Clavier USB"   → 0
+   → "Casque audio"  → 1
+   → "Écran 24p"     → 2
+   Le modèle peut apprendre :
+   "Le produit n°1 est TOUJOURS mal saisi dans HYBRIS"
+
+4️⃣  month (1–12)
+   → Extrait du champ order_date
+   → Le modèle peut découvrir que les erreurs EVOLLIS
+     surviennent principalement en décembre (clôture)
+
+5️⃣  quarter (1–4)
+   → Granularité trimestrielle
+   → Utile si les patterns sont trimestriels plutôt que mensuels
+
+
+📊 Comparaison features ETAPE 5 vs ETAPE 6
+--------------------------------------------
+
+Feature            | ETAPE 5 | ETAPE 6 | Rôle ajouté
+-------------------|---------|---------|----------------------------------
+quantity           |    ✅   |    ✅   | Volume de la commande
+unit_price_*       |    ✅   |    ✅   | Prix de référence
+total_price_*      |    ✅   |    ✅   | Prix déclaré
+gap_evollis        |    ✅   |    ✅   | Écart absolu EVOLLIS
+gap_hybris         |    ✅   |    ✅   | Écart absolu HYBRIS
+ratio_evollis      |    ❌   |    ✅   | % d'erreur relative EVOLLIS
+ratio_hybris       |    ❌   |    ✅   | % d'erreur relative HYBRIS
+product_label      |    ❌   |    ✅   | Profil d'erreur par produit
+month              |    ❌   |    ✅   | Saisonnalité mensuelle
+quarter            |    ❌   |    ✅   | Saisonnalité trimestrielle
+
+
+🎯 Point clé à retenir
+-----------------------
+
+❝ Ajouter des features informatives est souvent plus efficace
+  que de complexifier l'algorithme.
+  Le modèle XGBoost n'a pas changé.
+  Mais maintenant il "voit" plus loin. ❞

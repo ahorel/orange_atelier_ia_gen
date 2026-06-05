@@ -1,0 +1,69 @@
+Tableau de synthèse – Version V1 (origine par règles fixes)
+order_id	Incohérence réelle	Règle appliquée	Origine réelle (règle)	Origine prédite ML	Correct ?	Commentaire métier
+1	❌ Non	ev_ok & hy_ok	OK	OK	✅	Cas sain, aucune erreur, aucune décision inutile
+2	❌ Non	ev_ok & hy_ok	OK	OK	✅	Cas sain, comportement attendu
+3	❌ Non	ev_ok & hy_ok	OK	OK	✅	Cas sain, aucune ambiguïté
+4	✅ Oui	ev ❌ & hy ✅	EVOLLIS	EVOLLIS	✅	Attribution correcte, règle fiable dans ce cas
+5	✅ Oui	ev ✅ & hy ❌	HYBRIS	❌ EVOLLIS	❌ Faux positif	Le modèle contredit la règle pourtant vraie
+6	✅ Oui	ev ❌ & hy ✅	EVOLLIS	EVOLLIS	✅	Cas simple, règle et modèle alignés
+🔍 Lecture ligne par ligne (V1)
+🟢 Commandes 1–2–3 (OK)
+
+Aucune incohérence
+
+La règle bloque toute décision
+
+✔️ Système robuste et sûr
+
+🔴 Commande 4
+
+EVOLLIS = 30 au lieu de 20
+
+HYBRIS = correct
+
+✔️ Règle parfaitement adaptée
+
+✔️ Modèle aligné
+
+⚠️ Commande 5 — point critique
+
+EVOLLIS = correct (32)
+
+HYBRIS = faux (20)
+
+✔️ Règle vraie
+
+❌ Modèle ML se trompe
+
+❗ Mais la règle ne laisse aucune visibilité sur l’incertitude
+
+👉 Erreur masquée :
+la règle impose HYBRIS sans possibilité de débat.
+
+🟢 Commande 6
+
+EVOLLIS faux, HYBRIS correct
+
+✔️ Règle fiable
+
+✔️ Modèle aligné
+
+🧠 Comparaison V1 vs V2 (point clé)
+Critère	V1 – Règles fixes	V2 – Probabilités ML
+Décision	Binaire	Probabiliste
+Faux positifs	Invisibles	Observables
+Incertitude	Impossible	Mesurable
+Débat métier	Non	Oui
+Robustesse aux cas réels	❌ fragile	✅ adaptable
+🎯 Conclusion métier (très importante)
+
+La version V1 est correcte uniquement si les règles sont toujours vraies.
+Dès qu’un cas réel sort du cadre, l’erreur devient invisible.
+
+La V2, elle :
+
+accepte l’erreur,
+
+la rend mesurable,
+
+permet une gouvernance métier.
